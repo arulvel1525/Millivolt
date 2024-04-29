@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Consumption Leaderboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dark-theme {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="dark-theme">
+            <h1>Power Consumption Leaderboard</h1>
+            <canvas id="powerChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+
+    <script>
+         var firebaseConfig = {
+            apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+            authDomain: "millivolt-530bc.firebaseapp.com",
+            databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
+            projectId: "millivolt-530bc",
+            storageBucket: "millivolt-530bc.appspot.com",
+            messagingSenderId: "256197207854",
+            appId: "1:256197207854:web:aed24805235b946fe77cbf"
+        };
+
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Reference to Firebase database nodes for each department
+        const mechatronicsRef = firebase.database().ref('departments/mts');
+        const itRef = firebase.database().ref('departments/it');
+        const mechanicalRef = firebase.database().ref('departments/mech');
+        const naturopathyRef = firebase.database().ref('departments/nat');
+        const conventionRef = firebase.database().ref('departments/con');
+        const foodCourtRef = firebase.database().ref('departments/food');
+
+        // Initialize Chart.js with a bar chart
+        const ctx = document.getElementById('powerChart').getContext('2d');
+        const powerChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mechatronics', 'IT', 'Mechanical', 'Naturopathy', 'Convention Centre', 'Food Court'],
+                datasets: [{
+                    label: 'Power Consumption (W)',
+                    data: [],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Update department power values when data changes in Firebase
+        function updatePowerData() {
+            mechatronicsRef.once('value').then(snapshot => {
+                powerChart.data.datasets[0].data[0] = snapshot.val() || 0;
+                powerChart.update();
+            });
+
+            itRef.once('value').then(snapshot => {
+                powerChart.data.datasets[0].data[1] = snapshot.val() || 0;
+                powerChart.update();
+            });
+
+            mechanicalRef.once('value').then(snapshot => {
+                powerChart.data.datasets[0].data[2] = snapshot.val() || 0;
+                powerChart.update();
+            });
+
+            naturopathyRef.once('value').then(snapshot => {
+                powerChart.data.datasets[0].data[3] = snapshot.val() || 0;
+                powerChart.update();
+            });
+
+            conventionRef.once('value').then(snapshot => {
+                powerChart.data.datasets[0].data[4] = snapshot.val() || 0;
+                powerChart.update();
+            });
+
+            foodCourtRef.once('value').then(snapshot => {
+                powerChart.data.datasets[0].data[5] = snapshot.val() || 0;
+                powerChart.update();
+            });
+        }
+
+        // Call the function to update power data initially
+        updatePowerData();
+
+        // Set interval to update power data periodically
+        setInterval(updatePowerData, 5000); // Update every 5 seconds
+    </script>
+</body>
+
+</html>

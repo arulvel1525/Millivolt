@@ -12,20 +12,21 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
+            background-color: #1e1e1e; /* Dark background color */
+            color: #fff; /* White text color */
             margin: 0;
             padding: 0;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #fff; /* White text color */
         }
 
         #chart-container {
             width: 80%;
             margin: auto;
-            background-color: #fff;
+            background-color: #333; /* Darker background color for chart container */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -36,10 +37,14 @@
             font-size: 16px;
             padding: 10px;
             margin: 10px;
+            background-color: #333; /* Dark background color for dropdown and button */
+            color: #fff; /* White text color for dropdown and button */
+            border: 1px solid #fff; /* White border for dropdown and button */
+            border-radius: 5px;
         }
 
         #myChart {
-            border: 1px solid #ddd;
+            border: 1px solid #fff; /* White border for chart */
             border-radius: 8px;
         }
     </style>
@@ -66,14 +71,14 @@
 
     <script>
         var firebaseConfig = {
-        apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
-    authDomain: "millivolt-530bc.firebaseapp.com",
-    databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
-    projectId: "millivolt-530bc",
-    storageBucket: "millivolt-530bc.appspot.com",
-    messagingSenderId: "256197207854",
-    appId: "1:256197207854:web:aed24805235b946fe77cbf"
-    };
+            apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+            authDomain: "millivolt-530bc.firebaseapp.com",
+            databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
+            projectId: "millivolt-530bc",
+            storageBucket: "millivolt-530bc.appspot.com",
+            messagingSenderId: "256197207854",
+            appId: "1:256197207854:web:aed24805235b946fe77cbf"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -142,8 +147,8 @@
                         labels: times,
                         datasets: [{
                             label: dataType,
-                            borderColor: 'rgb(75, 192, 192)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgb(255, 193, 7)', // Yellow color for the graph line
+                            backgroundColor: 'rgba(255, 193, 7, 0.2)', // Yellow with transparency for fill color
                             borderWidth: 2,
                             pointRadius: 0, // Remove the points (data nodes)
                             data: values,
@@ -159,32 +164,16 @@
                                 position: 'bottom',
                                 title: {
                                     display: true,
-                                    text: 'Time'
+                                    text: 'Time',
+                                    color: '#fff' // White text color for axis title
                                 },
                                 ticks: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    color: '#fff' // White text color for axis ticks
                                 },
                                 grid: {
                                     display: false
-                                }
-                            },
-                            y: {
-                                type: 'linear',
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    text: dataType
                                 },
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                grid: {
-                                    display: true
-                                }
-                            }
-                        },
-                        plugins: {
-                            zoom: {
                                 zoom: {
                                     wheel: {
                                         enabled: true
@@ -192,15 +181,64 @@
                                     pinch: {
                                         enabled: true
                                     },
-                                    mode: 'xy'
+                                    mode: 'x',
+                                    rangeMin: {
+                                        x: null
+                                    },
+                                    rangeMax: {
+                                        x: null
+                                    }
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: dataType,
+                                    color: '#fff' // White text color for axis title
                                 },
-                                pan: {
-                                    enabled: true,
-                                    mode: 'xy'
+                                ticks: {
+                                    beginAtZero: true,
+                                    color: '#fff' // White text color for axis ticks
+                                },
+                                grid: {
+                                    display: true,
+                                    color: '#666' // Light gray grid lines
+                                },
+                                zoom: {
+                                    wheel: {
+                                        enabled: true
+                                    },
+                                    pinch: {
+                                        enabled: true
+                                    },
+                                    mode: 'y'
                                 }
                             }
+                        },
+                        pan: {
+                            enabled: true,
+                            mode: 'xy'
                         }
                     },
+                    plugins: {
+                        zoom: {
+                            zoom: {
+                                wheel: {
+                                    enabled: true
+                                },
+                                pinch: {
+                                    enabled: true
+                                },
+                                mode: 'xy'
+                            },
+                            pan: {
+                                enabled: true,
+                                mode: 'xy'
+                            }
+                        }
+                    }
                 });
             }).catch(function(error) {
                 console.error("Error reading data:", error);

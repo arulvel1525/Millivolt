@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appliance Power Monitor</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dark-theme {
+            background-color: #222;
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 150px;
+            flex-wrap: wrap;
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .icon {
+            font-size: 48px;
+            color: #feca57; /* Changed fan icon color to yellow */
+        }
+
+        .appliance {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px; /* Increased gap between values */
+            margin-bottom: 20px;
+        }
+
+        .appliance-value {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Appliance Power Monitor</h1>
+        <div class="dark-theme">
+            <div class="appliance">
+                <i class="material-icons icon">light</i>
+                <div class="appliance-value" id="light-value">0 W</div>
+                <span>Light</span>
+            </div>
+            <div class="appliance">
+                <i class="material-icons icon">ac_unit</i>
+                <div class="appliance-value" id="ac-value">0 W</div>
+                <span>AC</span>
+            </div>
+            <div class="appliance">
+                <i class="material-icons icon">desktop_windows</i>
+                <div class="appliance-value" id="projector-value">0 W</div>
+                <span>Projector</span>
+            </div>
+            <div class="appliance">
+                <i class="material-icons icon">science</i>
+                <div class="appliance-value" id="lab-value">0 W</div>
+                <span>Laboratory</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+
+    <script>
+         var firebaseConfig = {
+            apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+            authDomain: "millivolt-530bc.firebaseapp.com",
+            databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
+            projectId: "millivolt-530bc",
+            storageBucket: "millivolt-530bc.appspot.com",
+            messagingSenderId: "256197207854",
+            appId: "1:256197207854:web:aed24805235b946fe77cbf"
+        };
+
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Reference to Firebase database nodes for each appliance
+        const lightRef = firebase.database().ref('appliances/light');
+        const acRef = firebase.database().ref('appliances/ac');
+        const projectorRef = firebase.database().ref('appliances/projector');
+        const labRef = firebase.database().ref('appliances/laboratory');
+
+        // Update appliance values when data changes in Firebase
+        lightRef.on('value', (snapshot) => {
+            const lightValue = snapshot.val() || 0;
+            document.getElementById('light-value').textContent = `${lightValue} W`;
+        });
+
+        acRef.on('value', (snapshot) => {
+            const acValue = snapshot.val() || 0;
+            document.getElementById('ac-value').textContent = `${acValue} W`;
+        });
+
+        projectorRef.on('value', (snapshot) => {
+            const projectorValue = snapshot.val() || 0;
+            document.getElementById('projector-value').textContent = `${projectorValue} W`;
+        });
+
+        labRef.on('value', (snapshot) => {
+            const labValue = snapshot.val() || 0;
+            document.getElementById('lab-value').textContent = `${labValue} W`;
+        });
+    </script>
+</body>
+
+</html>
