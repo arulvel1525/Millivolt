@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Places</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./places.css">
+    <link rel="stylesheet" href="./mts.css">
+    <link rel="icon" href="./favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <aside>
+            <div class="top">
+                <div class="logo">
+                    <img src="./logo.png" alt="">
+                    <h2>
+                        MILLIVOLT
+                    </h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">
+                        close
+                        </span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="./graph.html" class="dash"><span class="material-icons-sharp">grid_view</span>  <h3>Graph</h3> </a>
+                <a href="./places.html"><span class="material-icons-sharp">apartment</span>  <h3>Places</h3> </a>
+
+            </div>
+        </aside>
+        <main>
+            <h1 class="he">Mechatronics</h1>
+            <div class="insights">
+            
+                <div class="Voltage">
+                    <h3 class="hr">Voltage</h3>
+                <div class="pase">   
+                    <p>Phase 1</p>
+                    <p>Phase 2</p>  
+                    <p>Phase 3</p>
+                </div> 
+
+                 <div class="value">   
+                    <p id="volt">- -</p>
+                    <p id="ol_phase2">- -</p>  
+                    <p id="ol_phase3">- -</p>
+                </div> 
+                </div>
+
+                <div class="ece">
+                   
+                 <h3 class="hr">Current</h3>
+                 <div class="pase">   
+                    <p>Phase 1</p>
+                    <p>Phase 2</p>  
+                    <p>Phase 3</p>
+                </div> 
+
+                 <div class="value">   
+                    <p id="amps">- -</p>
+                    <p id="ur_phase2">- -</p>  
+                    <p id="ur_phase3">- -</p>
+                </div> 
+                </div>
+
+                <div class="civil">
+                
+                        <h3 class="hr">Power Factor</h3>
+                        <div class="pase">   
+                            <p>Phase 1</p>
+                            <p>Phase 2</p>  
+                            <p>Phase 3</p>
+                        </div> 
+        
+                         <div class="value">   
+                            <p id="pf">- -</p>
+                            <p id="ol_phase2">- -</p>  
+                            <p id="ol_phase3">- -</p>
+                        </div> 
+                <div class="aiml">
+                        <h3 class="hr">KW/h</h3>
+                        <div class="pase">   
+                            <p>Phase 1</p>
+                            <p>Phase 2</p>  
+                            <p>Phase 3</p>
+                        </div> 
+        
+                         <div class="value">   
+                            <p id="pf">- -</p>
+                            <p id="ol_phase2">- -</p>  
+                            <p id="ol_phase3">- -</p>
+                </div> 
+                    </div> 
+                </div>
+            </div>
+        </main>
+
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyDmJwmU0EKpuJ0tnfCvhQweWOpFt5UrroU",
+        authDomain: "millivolt2-361e7.firebaseapp.com",
+        databaseURL: "https://millivolt2-361e7-default-rtdb.firebaseio.com",
+        projectId: "millivolt2-361e7",
+        storageBucket: "millivolt2-361e7.appspot.com",
+        messagingSenderId: "531845236865",
+        appId: "1:531845236865:web:4a32bbf49c13f733592580",
+        measurementId: "G-C4CXMTRJLC"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    var volpa1Ref = firebase.database().ref('Mechatronics/Voltage/Phase_1');
+    var pfpa1Ref = firebase.database().ref('Mechatronics/Power_Factor/Phase_1');
+    var ampspa1Ref = firebase.database().ref('Mechatronics/Amps/Phase_1');
+
+    function displayData(snapshot, elementId) {
+        if (snapshot.exists()) {
+            var data = snapshot.val();
+            var element = document.getElementById(elementId);
+            element.textContent = data; // Change the content as needed
+        } else {
+            console.log("No data found for Phase 1");
+        }
+    }
+
+    // Attach event listeners to continuously monitor changes in voltage and amperage data for Phase 1
+    volpa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'volt');
+    }, function(error) {
+        console.error("Error reading voltage data for Phase 1:", error);
+    });
+
+    ampspa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'amps');
+    }, function(error) {
+        console.error("Error reading amperage data for Phase 1:", error);
+    });
+    pfpa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'pf');
+    }, function(error) {
+        console.error("Error reading amperage data for Phase 1:", error);
+    });
+</script>
+
+
+
+
+
+</body>
+
+</html>

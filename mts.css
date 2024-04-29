@@ -1,0 +1,45 @@
+main .all{
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1.6rem;
+}
+main .pase{
+    font-size: 14px;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: auto 1fr; 
+    gap: 1.6rem;
+}
+main .hr{
+    padding-left: 60px;
+}
+
+
+    main .all > div:hover {
+    box-shadow: none;
+    }
+
+main .he{
+    padding-top: 20px;
+
+}
+
+.value{
+    text-align: center;
+    color: aqua;
+    font-size: 14px;
+    padding-top: 20px;
+    padding-left: px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1.6rem;
+
+}
+
+.volt{
+    align-items: center;
+    padding-left: 300px;
+   
+}

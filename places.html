@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Places</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="./favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="./places.css">
+    <link rel="stylesheet" href="./mts.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <aside>
+            <div class="top">
+                <div class="logo">
+                    <img src="./logo.png" alt="">
+                    <h2>
+                        MILLIVOLT
+                    </h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">
+                        close
+                        </span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="./graph.html" class="dash"><span class="material-icons-sharp">grid_view</span>  <h3>Graph</h3> </a>
+                <a href="./places.html"><span class="material-icons-sharp">apartment</span>  <h3>Values</h3> </a>
+                <a href="./diesel.html" class="place"><span class="material-icons-sharp">apartment</span>  <h3>Generator</h3> </a>
+            </div>
+        </aside>
+        <main>
+            <h1 class="place">Values</h1>
+            <div class="insights">
+               
+                <div class="Mechatronics">
+                    <div class="Voltage">
+                        <h3 class="hr">Voltage</h3>
+                    <div class="pase">   
+                        <p>Phase 1</p>
+                        <p>Phase 2</p>  
+                        <p>Phase 3</p>
+                    </div> 
+    
+                     <div class="value">   
+                        <p id="volt">- -</p>
+                        <p id="ol_phase2">- -</p>  
+                        <p id="ol_phase3">- -</p>
+                    </div> 
+                    </div>
+                </div>
+
+
+                <div class="Mechatronics">
+                    <div class="Voltage">
+                        <h3 class="hr">Amps</h3>
+                    <div class="pase">   
+                        <p>Phase 1</p>
+                        <p>Phase 2</p>  
+                        <p>Phase 3</p>
+                    </div> 
+    
+                     <div class="value">   
+                        <p id="amps">- -</p>
+                        <p id="ol_phase2">- -</p>  
+                        <p id="ol_phase3">- -</p>
+                    </div> 
+                    </div>
+                </div>
+
+
+
+                <div class="Mechatronics">
+                    <div class="Voltage">
+                        <h3 class="hr">Power Factor</h3>
+                    <div class="pase">   
+                        <p>Phase 1</p>
+                        <p>Phase 2</p>  
+                        <p>Phase 3</p>
+                    </div> 
+    
+                     <div class="value">   
+                        <p id="pf">- -</p>
+                        <p id="ol_phase2">- -</p>  
+                        <p id="ol_phase3">- -</p>
+                    </div> 
+                    </div>
+                </div>
+
+
+                <div class="Mechatronics">
+                    <div class="Voltage">
+                        <h3 class="hr">KWh</h3>
+                    <div class="pase">   
+                        <p>Phase 1</p>
+                        <p>Phase 2</p>  
+                        <p>Phase 3</p>
+                    </div> 
+    
+                     <div class="value">   
+                        <p id="kwh">- -</p>
+                        <p id="ol_phase2">- -</p>  
+                        <p id="ol_phase3">- -</p>
+                    </div> 
+                    </div>
+                </div>
+
+                <div class="Mechatronics">
+                    <div class="KWA/h">
+                        <h3 class="hr">KWAh</h3>
+                    <div class="pase">   
+                        <p>Phase 1</p>
+                        <p>Phase 2</p>  
+                        <p>Phase 3</p>
+                    </div> 
+    
+                     <div class="value">   
+                        <p id="kwah">- -</p>
+                        <p id="ol_phase2">- -</p>  
+                        <p id="ol_phase3">- -</p>
+                    </div> 
+                    </div>
+                </div>
+
+                <div class="Mechatronics">
+                    <div class="ai">
+                        <h3 class="hr"></h3>
+                    <div class="pase">   
+                        
+                    </div> 
+    
+                    
+                    </div>
+                </div>
+                
+
+               
+            </div>
+        </main>
+    </div>
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+    authDomain: "millivolt-530bc.firebaseapp.com",
+    databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
+    projectId: "millivolt-530bc",
+    storageBucket: "millivolt-530bc.appspot.com",
+    messagingSenderId: "256197207854",
+    appId: "1:256197207854:web:aed24805235b946fe77cbf"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    var volpa1Ref = firebase.database().ref('/Mechatronics/Voltage/Phase_1');
+    var pfpa1Ref = firebase.database().ref('/Mechatronics/PowerFactor/Phase_1');
+    var ampspa1Ref = firebase.database().ref('/Mechatronics/Amps/Phase_1');
+    var kwhpa1Ref = firebase.database().ref('/Mechatronics/kwh/Phase_1');
+    var kwahpa1Ref = firebase.database().ref('/Mechatronics/kvah/Phase_1');
+    var aipa1Ref = firebase.database().ref('/Mechatronics/CO2/Phase_1');
+    function displayData(snapshot, elementId) {
+        if (snapshot.exists()) {
+            var data = snapshot.val();
+            var element = document.getElementById(elementId);
+            element.textContent = data; // Change the content as needed
+        } else {
+            console.log("No data found for Phase 1");
+        }
+    }
+
+    // Attach event listeners to continuously monitor changes in voltage and amperage data for Phase 1
+    volpa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'volt');
+    }, function(error) {
+        console.error("Error reading voltage data for Phase 1:", error);
+    });
+
+    aipa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'ai');
+    }, function(error) {
+        console.error("Error reading voltage data for Phase 1:", error);
+    });
+
+   kwhpa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'kwh');
+    }, function(error) {
+        console.error("Error reading voltage data for Phase 1:", error);
+    });
+
+    kwahpa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'kwah');
+    }, function(error) {
+        console.error("Error reading voltage data for Phase 1:", error);
+    });
+
+
+    ampspa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'amps');
+    }, function(error) {
+        console.error("Error reading amperage data for Phase 1:", error);
+    });
+    pfpa1Ref.on('value', function(snapshot) {
+        displayData(snapshot, 'pf');
+    }, function(error) {
+        console.error("Error reading amperage data for Phase 1:", error);
+    });
+</script>
+</body>
+
+</html>

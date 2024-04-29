@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Graph</title>
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chart-container {
+            width: 80%;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        select, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        #myChart {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Graph</h1>
+    
+    <div>
+        <label for="data-type">Select Data Type:</label>
+        <select id="data-type">
+            <option value="volt">Voltage</option>
+            <option value="current">Current</option>
+            <option value="kwh">kWh</option>
+            <option value="pf">Power Factor</option>
+            <!-- Add other options for different data types if needed -->
+        </select>
+        <button onclick="plotGraph()">Submit</button>
+    </div>
+
+    <div id="chart-container">
+        <canvas id="myChart" height="400"></canvas> <!-- Set the desired canvas height -->
+    </div>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+    authDomain: "millivolt-530bc.firebaseapp.com",
+    databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
+    projectId: "millivolt-530bc",
+    storageBucket: "millivolt-530bc.appspot.com",
+    messagingSenderId: "256197207854",
+    appId: "1:256197207854:web:aed24805235b946fe77cbf"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        var voltageRef = firebase.database().ref('/Mechatronics/Storage/Voltage');
+        var currentRef = firebase.database().ref('/Mechatronics/Storage/current');
+        var kwhRef = firebase.database().ref('/Mechatronics/Storage/Kwh');
+        var pfRef = firebase.database().ref('/Mechatronics/Storage/pf');
+        // Add references for other data types if needed
+
+        var chart;
+
+        function displayData(snapshot, elementId) {
+            if (snapshot.exists()) {
+                var data = snapshot.val();
+                var element = document.getElementById(elementId);
+                element.textContent = data; // Change the content as needed
+            } else {
+                console.log("No data found for " + elementId);
+            }
+        }
+        plotGraph()
+        function plotGraph() {
+            var dataType = document.getElementById('data-type').value;
+            var dataRef;
+
+            switch (dataType) {
+                case 'volt':
+                    dataRef = voltageRef;
+                    break;
+                case 'current':
+                    dataRef = currentRef;
+                    break;
+                case 'kwh':
+                    dataRef = kwhRef;
+                    break;
+                case 'pf':
+                    dataRef = pfRef;
+                    break;
+                // Add cases for other data types if needed
+                default:
+                    console.error('Invalid data type');
+                    return;
+            }
+
+            dataRef.once('value').then(function(snapshot) {
+                var data = snapshot.val();
+
+                // Extract time and values from the data
+                var times = Object.keys(data);
+                var values = Object.values(data);
+
+                // Create a Chart.js line chart
+                if (chart) {
+                    chart.destroy(); // Destroy existing chart to update with new data
+                }
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: dataType,
+                            borderColor: 'rgb(75, 192, 192)',
+                            data: values,
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                title: {
+                                    display: true,
+                                    text: 'Time'
+                                },
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                grid: {
+                                    display: false
+                                },
+                                zoom: {
+                                    wheel: {
+                                        enabled: true
+                                    },
+                                    pinch: {
+                                        enabled: true
+                                    },
+                                    mode: 'x',
+                                    rangeMin: {
+                                        x: null
+                                    },
+                                    rangeMax: {
+                                        x: null
+                                    }
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: dataType
+                                },
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                grid: {
+                                    display: true
+                                },
+                                zoom: {
+                                    wheel: {
+                                        enabled: true
+                                    },
+                                    pinch: {
+                                        enabled: true
+                                    },
+                                    mode: 'y'
+                                }
+                            }
+                        },
+                        pan: {
+                            enabled: true,
+                            mode: 'xy'
+                        }
+                    },
+                    plugins: {
+                        zoom: {
+                            zoom: {
+                                wheel: {
+                                    enabled: true
+                                },
+                                pinch: {
+                                    enabled: true
+                                },
+                                mode: 'xy'
+                            },
+                            pan: {
+                                enabled: true,
+                                mode: 'xy'
+                            }
+                        }
+                    }
+                });
+            }).catch(function(error) {
+                console.error("Error reading data:", error);
+            });
+        }
+    </script>
+</body>
+</html>

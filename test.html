@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./test.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    
+</head>
+<body>
+ <div class="container">
+        <aside>
+            <div class="top">
+                <div class="logo">
+                    <img src="./logo.png" alt="">
+                    <h2>
+                        MILLIVOLT
+                    </h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">
+                        close
+                        </span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="./test.html" class="dash"><span class="material-icons-sharp">grid_view</span>  <h3>Graph</h3> </a>
+                <a href="./places.html"><span class="material-icons-sharp">apartment</span>  <h3>Values</h3> </a>
+
+            </div>
+        </aside>
+    <div class="container">
+        <h1>Data Display</h1>
+
+        <div class="input-container">
+            <div>
+                <label for="start-hour">Start Hour:</label>
+                <input type="text" id="start-hour" placeholder="0">
+            </div>
+            <div>
+                <label for="end-hour">End Hour:</label>
+                <input type="text" id="end-hour" placeholder="Enter End Hour">
+            </div>
+            <div>
+                <label for="start-minute">Start Minute:</label>
+                <input type="text" id="start-minute" placeholder="Enter Start Minute">
+            </div>
+            <div>
+                <label for="end-minute">End Minute:</label>
+                <input type="text" id="end-minute" placeholder="Enter End Minute">
+            </div>
+        </div>
+
+        <div class="output-container">
+            <h2>Data Values:</h2>
+            <div id="display-values"></div>
+        </div>
+
+        <button id="submit-button">Submit</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+    <script>
+        // Initialize Firebase (replace with your own config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+    authDomain: "millivolt-530bc.firebaseapp.com",
+    databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
+    projectId: "millivolt-530bc",
+    storageBucket: "millivolt-530bc.appspot.com",
+    messagingSenderId: "256197207854",
+    appId: "1:256197207854:web:aed24805235b946fe77cbf"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Function to read and display data values from Firebase
+        function displayData() {
+            const startHour = document.getElementById("start-hour").value;
+            const startMinute = document.getElementById("start-minute").value;
+            const endHour = document.getElementById("end-hour").value;
+            const endMinute = document.getElementById("end-minute").value;
+
+            const startMinutes = parseInt(startHour) * 60 + parseInt(startMinute);
+            const endMinutes = parseInt(endHour) * 60 + parseInt(endMinute);
+
+            const displayContainer = document.getElementById("display-values");
+            displayContainer.innerHTML = "";
+
+            const table = document.createElement("table");
+            table.innerHTML = `
+                <tr>
+                    <th>Time (HH:MM)</th>
+                    <th>Voltage</th>
+                    <th>Amps</th>
+                    <th>Power Factor</th>
+                    <th>kWh</th>
+                    <th>kVAh</th>
+                </tr>
+            `;
+
+            const dataPaths = {
+                voltage: "/Mechatronics/Storage/Voltage",
+                amps: "/Mechatronics/Storage/current",
+                powerfactor: "/Mechatronics/Storage/pf",
+                kwh: "/Mechatronics/Storage/kwhkwh",
+                kvah: "/Mechatronics/Storage/kvahkwh",
+            };
+
+            for (let i = startMinutes; i <= endMinutes; i++) {
+                const hours = Math.floor(i / 60);
+                const minutes = i % 60;
+                const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+
+                const rowData = { "Time (HH:MM)": formattedTime };
+
+                for (const dataType in dataPaths) {
+                    if (dataPaths.hasOwnProperty(dataType)) {
+                        const dataPath = dataPaths[dataType];
+                        const data = database.ref(dataPath).once("value").then((snapshot) => {
+                            const values = snapshot.val();
+
+                            const value = values[i];
+                            rowData[dataType] = value !== undefined ? value : 'N/A';
+
+                            if (dataType === 'kvah') {
+                                const row = document.createElement("tr");
+                                for (const key in rowData) {
+                                    if (rowData.hasOwnProperty(key)) {
+                                        const cell = document.createElement("td");
+                                        cell.textContent = rowData[key];
+                                        row.appendChild(cell);
+                                    }
+                                }
+                                table.appendChild(row);
+                            }
+                        });
+                    }
+                }
+            }
+
+            displayContainer.appendChild(table);
+        }
+
+        // Add event listener to the submit button
+        document.getElementById("submit-button").addEventListener("click", displayData);
+    </script>
+</body>
+</html>
