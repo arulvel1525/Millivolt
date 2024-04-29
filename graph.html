@@ -54,6 +54,7 @@
             <option value="current">Current</option>
             <option value="kwh">kWh</option>
             <option value="pf">Power Factor</option>
+            <option value="pow">Power</option>
             <!-- Add other options for different data types if needed -->
         </select>
         <button onclick="plotGraph()">Submit</button>
@@ -65,14 +66,14 @@
 
     <script>
         var firebaseConfig = {
-            apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
+        apiKey: "AIzaSyD16GTq_2fhnGQaedKDGKyouE6T5xllvAM",
     authDomain: "millivolt-530bc.firebaseapp.com",
     databaseURL: "https://millivolt-530bc-default-rtdb.firebaseio.com",
     projectId: "millivolt-530bc",
     storageBucket: "millivolt-530bc.appspot.com",
     messagingSenderId: "256197207854",
     appId: "1:256197207854:web:aed24805235b946fe77cbf"
-        };
+    };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -81,6 +82,7 @@
         var currentRef = firebase.database().ref('/Mechatronics/Storage/current');
         var kwhRef = firebase.database().ref('/Mechatronics/Storage/Kwh');
         var pfRef = firebase.database().ref('/Mechatronics/Storage/pf');
+        var pfRef = firebase.database().ref('/Mechatronics/Storage/power');
         // Add references for other data types if needed
 
         var chart;
@@ -94,7 +96,7 @@
                 console.log("No data found for " + elementId);
             }
         }
-        plotGraph()
+
         function plotGraph() {
             var dataType = document.getElementById('data-type').value;
             var dataRef;
@@ -110,6 +112,9 @@
                     dataRef = kwhRef;
                     break;
                 case 'pf':
+                    dataRef = pfRef;
+                    break;
+                case 'pow':
                     dataRef = pfRef;
                     break;
                 // Add cases for other data types if needed
@@ -138,8 +143,11 @@
                         datasets: [{
                             label: dataType,
                             borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 2,
+                            pointRadius: 0, // Remove the points (data nodes)
                             data: values,
-                            fill: false
+                            fill: true
                         }]
                     },
                     options: {
@@ -158,21 +166,6 @@
                                 },
                                 grid: {
                                     display: false
-                                },
-                                zoom: {
-                                    wheel: {
-                                        enabled: true
-                                    },
-                                    pinch: {
-                                        enabled: true
-                                    },
-                                    mode: 'x',
-                                    rangeMin: {
-                                        x: null
-                                    },
-                                    rangeMax: {
-                                        x: null
-                                    }
                                 }
                             },
                             y: {
@@ -187,7 +180,11 @@
                                 },
                                 grid: {
                                     display: true
-                                },
+                                }
+                            }
+                        },
+                        plugins: {
+                            zoom: {
                                 zoom: {
                                     wheel: {
                                         enabled: true
@@ -195,32 +192,15 @@
                                     pinch: {
                                         enabled: true
                                     },
-                                    mode: 'y'
+                                    mode: 'xy'
+                                },
+                                pan: {
+                                    enabled: true,
+                                    mode: 'xy'
                                 }
                             }
-                        },
-                        pan: {
-                            enabled: true,
-                            mode: 'xy'
                         }
                     },
-                    plugins: {
-                        zoom: {
-                            zoom: {
-                                wheel: {
-                                    enabled: true
-                                },
-                                pinch: {
-                                    enabled: true
-                                },
-                                mode: 'xy'
-                            },
-                            pan: {
-                                enabled: true,
-                                mode: 'xy'
-                            }
-                        }
-                    }
                 });
             }).catch(function(error) {
                 console.error("Error reading data:", error);
